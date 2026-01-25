@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firma Curierat - Sistem de Gestiune</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab.active {
+            background: white;
+            color: #2a5298;
+            border-bottom: 3px solid #2a5298;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3c72;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        select, input {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            background: #2a5298;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #2a5298;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Firma Curierat</h1>
+        <p>Sistem de Gestiune Colete și Livrări</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="showSection('colete')">Colete</button>
+        <button class="tab" onclick="showSection('expeditori')">Expeditori</button>
+        <button class="tab" onclick="showSection('produse')">Produse</button>
+        <button class="tab" onclick="showSection('livratori')">Livratori</button>
+        <button class="tab" onclick="showSection('vehicule')">Vehicule</button>
+        <button class="tab" onclick="showSection('locatii')">Locații</button>
+        <button class="tab" onclick="showSection('depozite')">Depozite</button>
+        <button class="tab" onclick="showSection('continut_colete')">Conținut Colete</button>
+        <button class="tab" onclick="showSection('livrari_colete')">Livrări Colete</button>
+        <button class="tab" onclick="showSection('alocari_vehicule')">Alocări Vehicule</button>
+        <button class="tab" onclick="showSection('rapoarte')">Rapoarte</button>
+    </div>
+
+    <div class="content">
+        <!-- COLETE Section -->
+        <div id="colete" class="section active">
+            <div class="controls">
+                <button class="btn btn-success" onclick="openAddColet()">Adaugă Colet</button>
+                <button class="btn btn-primary" onclick="loadColete()">Reîmprospătează</button>
+                <select id="sortColete" onchange="loadColete()">
+                    <option value="">Sortează după...</option>
+                    <option value="data_preluare DESC">Data preluare (desc)</option>
+                    <option value="data_preluare ASC">Data preluare (asc)</option>
+                    <option value="valoare_ron DESC">Valoare (desc)</option>
+                    <option value="valoare_ron ASC">Valoare (asc)</option>
+                </select>
+                <select id="filterStatus" onchange="loadColete()">
+                    <option value="">Toate statusurile</option>
+                    <option value="In Depozit">În Depozit</option>
+                    <option value="In Tranzit">În Tranzit</option>
+                    <option value="Livrat">Livrat</option>
+                </select>
+            </div>
+            <div id="coleteMessage"></div>
+            <div class="table-container">
+                <table id="coleteTable">
+                    <thead>
+                    <tr>
+                        <th>AWB</th>
+                        <th>Status</th>
+                        <th>Data Preluare</th>
+                        <th>Destinatar</th>
+                        <th>Adresa</th>
+                        <th>Greutate (kg)</th>
+                        <th>Valoare (RON)</th>
+                        <th>Dimensiune</th>
+                        <th>ID Expeditor</th>
+                        <th>ID Depozit</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- EXPEDITORI Section -->
+        <div id="expeditori" class="section">
+            <div class="controls">
+                <button class="btn btn-success" onclick="openAddExpeditor()">Adaugă Expeditor</button>
+                <button class="btn btn-primary" onclick="loadExpeditori()">Reîmprospătează</button>
+                <select id="sortExpeditori" onchange="loadExpeditori()">
+                    <option value="">Sortează după...</option>
+                    <option value="NUME ASC">Nume (A-Z)</option>
+                    <option value="TIP_EXPEDITOR ASC">Tip (A-Z)</option>
+                </select>
+            </div>
+            <div id="expeditoriMessage"></div>
+            <div class="table-container">
+                <table id="expeditoriTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tip</th>
+                        <th>Nume</th>
+                        <th>Prenume</th>
+                        <th>Telefon</th>
+                        <th>Email</th>
+                        <th>Adresa</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PRODUSE Section -->
+        <div id="produse" class="section">
+            <div class="controls">
+                <button class="btn btn-success" onclick="openAddProdus()">Adaugă Produs</button>
+                <button class="btn btn-primary" onclick="loadProduse()">Reîmprospătează</button>
+                <select id="sortProduse" onchange="loadProduse()">
+                    <option value="">Sortează după...</option>
+                    <option value="NUME_PRODUS ASC">Nume (A-Z)</option>
+                    <option value="NUME_PRODUS DESC">Nume (Z-A)</option>
+                    <option value="NUME_CATEGORIE ASC">Categorie (A-Z)</option>
+                </select>
+            </div>
+            <div id="produseMessage"></div>
+            <div class="table-container">
+                <table id="produseTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nume Produs</th>
+                        <th>Categorie</th>
+                        <th>Fragilitate</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LIVRATORI Section -->
+        <div id="livratori" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadLivratori()">Reîmprospătează</button>
+                <select id="sortLivratori" onchange="loadLivratori()">
+                    <option value="">Sortează după...</option>
+                    <option value="SALARIU DESC">Salariu (descrescător)</option>
+                    <option value="SALARIU ASC">Salariu (crescător)</option>
+                    <option value="NUME ASC">Nume (A-Z)</option>
+                </select>
+            </div>
+            <div id="livratoriMessage"></div>
+            <div class="table-container">
+                <table id="livratoriTable">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 60px;">ID</th>
+                        <th style="min-width: 120px;">Nume</th>
+                        <th style="min-width: 120px;">Prenume</th>
+                        <th style="min-width: 120px;">Salariu (RON)</th>
+                        <th style="min-width: 250px;">Vehicul Alocat</th>
+                        <th style="min-width: 150px;">Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VEHICULE Section -->
+        <div id="vehicule" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadVehicule()">Reîmprospătează</button>
+                <select id="sortVehicule" onchange="loadVehicule()">
+                    <option value="">Sortează după...</option>
+                    <option value="MARCA ASC">Marcă (A-Z)</option>
+                    <option value="CAPACITATE_GREUTATE DESC">Capacitate greutate (desc)</option>
+                    <option value="CAPACITATE_DIMENSIUNE DESC">Capacitate dimensiune (desc)</option>
+                </select>
+            </div>
+            <div id="vehiculeMessage"></div>
+            <div class="table-container">
+                <table id="vehiculeTable">
+                    <thead>
+                    <tr>
+                        <th>Nr. Înmatriculare</th>
+                        <th>Marcă</th>
+                        <th>Model</th>
+                        <th>Capacitate Dimensiune (m³)</th>
+                        <th>Capacitate Greutate (kg)</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LOCATII Section -->
+        <div id="locatii" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadLocatii()">Reîmprospătează</button>
+                <select id="sortLocatii" onchange="loadLocatii()">
+                    <option value="">Sortează după...</option>
+                    <option value="JUDET ASC">Județ (A-Z)</option>
+                    <option value="LOCALITATE ASC">Localitate (A-Z)</option>
+                    <option value="COD_POSTAL ASC">Cod poștal</option>
+                </select>
+            </div>
+            <div id="locatiiMessage"></div>
+            <div class="table-container">
+                <table id="locatiiTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cod Poștal</th>
+                        <th>Județ</th>
+                        <th>Localitate</th>
+                        <th>Stradă</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- DEPOZITE Section -->
+        <div id="depozite" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadDepozite()">Reîmprospătează</button>
+                <select id="sortDepozite" onchange="loadDepozite()">
+                    <option value="">Sortează după...</option>
+                    <option value="CAPACITATE_MAXIMA DESC">Capacitate (desc)</option>
+                    <option value="CAPACITATE_MAXIMA ASC">Capacitate (asc)</option>
+                    <option value="LOCALITATE ASC">Localitate (A-Z)</option>
+                </select>
+            </div>
+            <div id="depoziteMessage"></div>
+            <div class="table-container">
+                <table id="depoziteTable">
+                    <thead>
+                    <tr>
+                        <th style="min-width: 100px;">ID Depozit</th>
+                        <th style="min-width: 180px;">Capacitate Maximă (m³)</th>
+                        <th style="min-width: 150px;">Localitate</th>
+                        <th style="min-width: 120px;">Județ</th>
+                        <th style="min-width: 200px;">Adresă</th>
+                        <th style="min-width: 180px;">Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CONTINUT COLETE Section -->
+        <div id="continut_colete" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadContinutColete()">Reîmprospătează</button>
+                <select id="sortContinutColete" onchange="loadContinutColete()">
+                    <option value="">Sortează după...</option>
+                    <option value="AWB ASC">AWB (A-Z)</option>
+                    <option value="ID_PRODUS ASC">ID Produs (crescător)</option>
+                    <option value="CANTITATE DESC">Cantitate (desc)</option>
+                </select>
+            </div>
+            <div id="continutColeteMessage"></div>
+            <div class="table-container">
+                <table id="continutColeteTable">
+                    <thead>
+                    <tr>
+                        <th>AWB</th>
+                        <th>ID Produs</th>
+                        <th>Cantitate</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LIVRARI COLETE Section -->
+        <div id="livrari_colete" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadLivrariColete()">Reîmprospătează</button>
+                <select id="sortLivrariColete" onchange="loadLivrariColete()">
+                    <option value="">Sortează după...</option>
+                    <option value="DATA_LIVRARE DESC">Data livrării (desc)</option>
+                    <option value="DATA_LIVRARE ASC">Data livrării (asc)</option>
+                    <option value="AWB ASC">AWB (A-Z)</option>
+                </select>
+            </div>
+            <div id="livrariColeteMessage"></div>
+            <div class="table-container">
+                <table id="livrariColeteTable">
+                    <thead>
+                    <tr>
+                        <th>AWB</th>
+                        <th>ID Livrator</th>
+                        <th>Data Livrare</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ALOCARI VEHICULE Section -->
+        <div id="alocari_vehicule" class="section">
+            <div class="controls">
+                <button class="btn btn-primary" onclick="loadAlocariVehicule()">Reîmprospătează</button>
+                <select id="sortAlocariVehicule" onchange="loadAlocariVehicule()">
+                    <option value="">Sortează după...</option>
+                    <option value="DATA_ALOCARE DESC">Data alocării (desc)</option>
+                    <option value="ID_LIVRATOR ASC">ID Livrator (crescător)</option>
+                    <option value="NR_INMATRICULARE ASC">Nr. Înmatriculare (A-Z)</option>
+                </select>
+            </div>
+            <div id="alocariVehiculeMessage"></div>
+            <div class="table-container">
+                <table id="alocariVehiculeTable">
+                    <thead>
+                    <tr>
+                        <th>ID Livrator</th>
+                        <th>Nr. Înmatriculare</th>
+                        <th>Data Alocare</th>
+                        <th>Acțiuni</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RAPOARTE Section -->
+        <div id="rapoarte" class="section">
+
+
+            <div style="margin-bottom: 30px;">
+                <h3>Colete în Tranzit Gestionate de Livratori cu Salarii Mari</h3>
+                <p style="color: #6c757d; margin: 10px 0;">Afișează coletele cu status 'În Tranzit', gestionate de livratori cu un salariu mai mare de 4000 RON.</p>
+                <button class="btn btn-primary" onclick="loadRaportJoin()">Afișează Raport</button>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3>Colete cu Produse Multiple</h3>
+                <p style="color: #6c757d; margin: 10px 0;">Afișează coletele care conțin mai mult de un tip de produs și listează produsele respective.</p>
+                <button class="btn btn-primary" onclick="loadRaportGroupBy()">Afișează Raport</button>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3>Raport Colet/Expeditor</h3>
+                <p style="color: #6c757d; margin: 10px 0;">Prezinta un raport detaliat al coletelor impreuna cu expeditorii respectivi.</p>
+                <button class="btn btn-primary" onclick="loadViewCompus()">Afișează View Compus</button>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3>Raport Depozite</h3>
+                <p style="color: #6c757d; margin: 10px 0;">Prezintă un raport detaliat al depozitelor, incluzând statistici despre colete și produsele conținute.</p>
+                <button class="btn btn-primary" onclick="loadViewComplex()">Afișează View Complex</button>
+            </div>
+
+            <div id="rapoarteMessage"></div>
+            <div class="table-container" id="rapoarteContainer"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Adaugă Colet -->
+<div id="modalColet" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Adaugă Colet Nou</h2>
+        </div>
+        <form id="formColet">
+            <div class="form-group">
+                <label>AWB *</label>
+                <input type="text" name="awb" required>
+            </div>
+            <div class="form-group">
+                <label>Status *</label>
+                <select name="status" required>
+                    <option value="In Depozit">În Depozit</option>
+                    <option value="In Tranzit">În Tranzit</option>
+                    <option value="Livrat">Livrat</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nume Destinatar *</label>
+                <input type="text" name="destinatar_nume" required>
+            </div>
+            <div class="form-group">
+                <label>Prenume Destinatar *</label>
+                <input type="text" name="destinatar_prenume" required>
+            </div>
+            <div class="form-group">
+                <label>Adresă Destinatar *</label>
+                <textarea name="destinatar_adresa" required rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Greutate (kg)</label>
+                <input type="number" step="0.01" name="greutate">
+            </div>
+            <div class="form-group">
+                <label>Dimensiune</label>
+                <select name="dimensiune">
+                    <option value="S">S (Small - ~0.03 m³)</option>
+                    <option value="M">M (Medium - ~0.13 m³)</option>
+                    <option value="L">L (Large - ~0.34 m³)</option>
+                    <option value="XL">XL (Extra Large - ~1 m³)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Valoare (RON)</label>
+                <input type="number" step="0.01" name="valoare_ron">
+            </div>
+            <div class="form-group">
+                <label>Expeditor *</label>
+                <select name="id_expeditor" id="selectExpeditor" required></select>
+            </div>
+            <div class="form-group">
+                <label>Depozit</label>
+                <select name="id_depozit" id="selectDepozit">
+                    <option value="">Fără depozit</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Salvează</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal('modalColet')">Anulează</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Adaugă Expeditor -->
+<div id="modalExpeditor" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Adaugă Expeditor Nou</h2>
+        </div>
+        <form id="formExpeditor">
+            <div class="form-group">
+                <label>Tip Expeditor *</label>
+                <select name="tip_expeditor" required>
+                    <option value="Persoana Fizica">Persoană Fizică</option>
+                    <option value="Persoana Juridica">Persoană Juridică</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nume *</label>
+                <input type="text" name="nume" required>
+            </div>
+            <div class="form-group">
+                <label>Prenume *</label>
+                <input type="text" name="prenume" required>
+            </div>
+            <div class="form-group">
+                <label>Telefon (10 cifre) *</label>
+                <input type="text" name="telefon" pattern="[0-9]{10}" required>
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Adresă *</label>
+                <textarea name="adresa" required rows="2"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Salvează</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal('modalExpeditor')">Anulează</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Adaugă Produs -->
+<div id="modalProdus" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Adaugă Produs Nou</h2>
+        </div>
+        <form id="formProdus">
+            <div class="form-group">
+                <label>Nume Produs *</label>
+                <input type="text" name="nume_produs" required>
+            </div>
+            <div class="form-group">
+                <label>Categorie *</label>
+                <input type="text" name="nume_categorie" required>
+            </div>
+            <div class="form-group">
+                <label>Fragilitate *</label>
+                <select name="fragilitate" required>
+                    <option value="DA">DA</option>
+                    <option value="NU">NU</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Salvează</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal('modalProdus')">Anulează</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
